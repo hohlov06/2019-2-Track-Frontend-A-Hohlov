@@ -13,31 +13,31 @@
  */
 
 function bytesToHumanDecorator(){
-  let postfix = [' PB', ' TB', ' GB', ' MB', ' KB', ' B']
-  let bytesNumber = [];
-  let num = 1;
-  for (let i = 0; i < postfix.length; i++){
-    bytesNumber.push(num);
-    num *= 1024;
+  const postfix = [' PB', ' TB', ' GB', ' MB', ' KB', ' B']
+  let bytesNumber = []
+  let num = 1
+  for (let i = 0; i < postfix.length; i+=1){
+    bytesNumber.push(num)
+    num *= 1024
   }
-  bytesNumber = bytesNumber.reverse();
+  bytesNumber = bytesNumber.reverse()
 
-  return function(bytes){
-    let i = 0;
-    for (; i < bytesNumber.length - 1; i++)
+  return function func(bytes){
+    let i = 0
+    for (; i < bytesNumber.length - 1; i+=1)
       if (bytes >= bytesNumber[i]){
-        let converted = bytes / bytesNumber[i];
-        let trunced = Math.trunc(converted);
+        let converted = bytes / bytesNumber[i]
+        const trunced = Math.trunc(converted)
         converted = ((converted - trunced) < 1e-2)
           ? trunced
-          : (Math.floor(converted * 100) / 100).toFixed(2);
-        return String(converted) + postfix[i];
+          : (Math.floor(converted * 100) / 100).toFixed(2)
+        return String(converted) + postfix[i]
       }
-    return String(bytes) + postfix[i];
+    return String(bytes) + postfix[i]
   }
 }
 
-let convert = bytesToHumanDecorator();
+const convert = bytesToHumanDecorator()
 
 export default function convertBytesToHuman(bytes) {
   if( (typeof(bytes) != 'number')
@@ -46,7 +46,7 @@ export default function convertBytesToHuman(bytes) {
     || !Number.isInteger(bytes)
     || bytes === null
     || bytes < 0)
-    return false;
-  return convert(bytes);
+    return false
+  return convert(bytes)
 }
 

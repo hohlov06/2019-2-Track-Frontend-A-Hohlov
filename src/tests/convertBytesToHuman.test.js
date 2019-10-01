@@ -7,7 +7,7 @@
  * convertBytesToHuman(5) === 5
  */
 
-import convertBytesToHuman from '../convertBytesToHuman';
+import convertBytesToHuman from '../convertBytesToHuman'
 
 function foo() {return 2}
 
@@ -27,7 +27,7 @@ test('Возвращает false для неправильного типа да
   expect(convertBytesToHuman(true)).toBe(false)
   expect(convertBytesToHuman(false)).toBe(false)
   expect(convertBytesToHuman(-1)).toBe(false)
-});
+})
 
 test('Возвращает корректное значение для чисел', () => {
   expect(convertBytesToHuman(2)).toBe('2 B')
@@ -40,6 +40,6 @@ test('Возвращает корректное значение для чисе
   expect(convertBytesToHuman(1073741824)).toBe('1 GB')
   expect(convertBytesToHuman(1099511627776)).toBe('1 TB')
   expect(convertBytesToHuman(1125899906842624)).toBe('1 PB')
-});
+})
 
 // другая группа проверок

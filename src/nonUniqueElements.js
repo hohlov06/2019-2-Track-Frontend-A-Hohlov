@@ -25,18 +25,18 @@ nonUniqueElements([10, 9, 10, 10, 9, 8]) == [10, 9, 10, 10, 9]
  */
 
 export default function nonUniqueElements(data) {
-  let nonUniqueSet = new Set();
+  const nonUniqueSet = new Set()
 
-  for (let index = 0; index < data.length; index++){
-    let element = data[index];
+  for (let index = 0; index < data.length; index+=1){
+    const element = data[index]
     if (!nonUniqueSet.has(element))
       if (data.indexOf(element, index+1) != -1)
-        nonUniqueSet.add(element);
+        nonUniqueSet.add(element)
       else{
-        data.splice(index,1);
-        index--;
+        data.splice(index,1)
+        index -= 1
       }
   }
-  return data;
+  return data
 }
 
