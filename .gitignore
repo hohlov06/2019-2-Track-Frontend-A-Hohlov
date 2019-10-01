@@ -148,3 +148,6 @@ jest_*/
 
 # WebStorm project files
 .idea
+
+# build
+build
