@@ -41,8 +41,6 @@ const convert = bytesToHumanDecorator()
 
 export default function convertBytesToHuman(bytes) {
   if( (typeof(bytes) != 'number')
-    || isNaN(bytes)
-    || !isFinite(bytes)
     || !Number.isInteger(bytes)
     || bytes === null
     || bytes < 0)
