@@ -86,7 +86,7 @@
     "test:engine": "check-engine",
     "test:sec": "npm audit || true",
     "test:unit": "cross-env NODE_ENV=test jest",
-    ,"test:unit_react": "react-scripts test --env=jsdom",
+    "test:unit_react": "react-scripts test --env=jsdom",
     "lint:js": "eslint src/**/*.js",
     "lint:css": "stylelint 'client/**/*.{scss,css}' && stylelint --rd 'client/**/*.{scss,css}'",
     "lint:dup": "jscpd -g --threshold=1 client tests docker",
