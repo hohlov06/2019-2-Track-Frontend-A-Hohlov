@@ -1,6 +1,6 @@
 {
   "name": "track-mail-2019-lupa",
-  "homepage": "https://your_gh_login.github.io/your_repo_name",
+  "homepage": "https://hohlov06.github.io/track-mail-2019-lupa",
   "description": "Mail.Ru Group Frontend Track course, 2019",
   "version": "0.1.0",
   "author": "A-Hohlov",
@@ -81,7 +81,8 @@
     "lint": "npm run lint:js && npm run lint:dup && npm run lint:css",
     "lint-fix": "eslint --fix",
     "clean": "rm -rf dist",
-    "test": "npm run test:engine && npm run test:unit && npm run lint",
+    "test": "CI=true npm run test:engine && npm run test:unit && npm run lint",
+    "test:coverage": "npm test -- --coverage",
     "test:engine": "check-engine",
     "test:sec": "npm audit || true",
     "test:unit": "cross-env NODE_ENV=test jest",

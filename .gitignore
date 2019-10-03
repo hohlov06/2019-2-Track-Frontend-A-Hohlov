@@ -102,6 +102,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+package-lock.json
 
 # Typescript v1 declaration files
 typings/
@@ -145,3 +146,9 @@ flow-typed/
 docs/_book/
 jest_*/
 .jscpd/
+
+# WebStorm project files
+.idea
+
+# build
+build

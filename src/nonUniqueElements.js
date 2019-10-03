@@ -25,6 +25,20 @@ nonUniqueElements([10, 9, 10, 10, 9, 8]) == [10, 9, 10, 10, 9]
  */
 
 export default function nonUniqueElements(data) {
-  // your solution goes here
-  return data
+  const nonUniqueSet = new Set()
+  const result = []
+
+  for (let index = 0; index < data.length; index+=1){
+    const element = data[index]
+    if (!nonUniqueSet.has(element)){
+      if (data.indexOf(element, index+1) != -1){
+        nonUniqueSet.add(element)
+        result.push(element)
+      }
+    }
+    else
+      result.push(element)
+  }
+  return result
 }
+
