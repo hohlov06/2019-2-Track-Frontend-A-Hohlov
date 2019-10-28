@@ -1,6 +1,14 @@
+import ChatBubble from './ChatBubble';
+import MessageSequence from './MessageSequence';
+import FormInput from './FormInput';
+
 const template = document.createElement('template');
 template.innerHTML = `
     <style>
+    
+    :host {
+        min-height: 300px;
+    }
     
         form {
             height: 100%;
@@ -13,28 +21,31 @@ template.innerHTML = `
         
         form-input {
             width: 100%;
-            margin-bottom: 0px;
+            margin-bottom: 0vh;
             flex: 1 1 5%;
-
+            min-height: 40px;
+            display: flex;
+            flex-direction: row;
+            overflow-y: auto;
         }
 
         .result {
             color: red;
             background-color: lightskyblue;
-            height: 85vh;
+            height: 88.3vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         input[type=submit] {
             visibility: collapse;
         }
         
-        chat-header {
-
-        }
         
     </style>
     <form>
-        <chat-header></chat-header>
         <div class="result"></div>
         <form-input name="message-text" placeholder="Введите сообщение"></form-input>
     </form>
@@ -46,22 +57,49 @@ class MessageForm extends HTMLElement {
     this._shadowRoot.appendChild(template.content.cloneNode(true));
     this.$form = this._shadowRoot.querySelector('form');
     this.$input = this._shadowRoot.querySelector('form-input');
-    this.$message = this._shadowRoot.querySelector('.result');
+    this.$messageList = this._shadowRoot.querySelector('.result');
 
     this.$form.addEventListener('submit', this._onSubmit.bind(this));
     this.$form.addEventListener('keypress', this._onKeyPress.bind(this));
+    this.$input.addEventListener('sendClicked', this._onSendClickedPress.bind(this));
+  }
+
+  connectedCallback() {
   }
 
   _onSubmit(event) {
     event.preventDefault();
-    this.$message.innerText = this.$input.value;
+    if (this.$input.value.toString().trim() !== '') {
+      const currentTime = new Date();
+      const lastMessageBubble = document.createElement('chat-bubble');
+      lastMessageBubble.className = 'mine';
+      lastMessageBubble.content = this.$input.value;
+      let currentMinutes = currentTime.getMinutes();
+      if (currentMinutes < 10)
+        currentMinutes = `0${currentMinutes}`;
+      lastMessageBubble.time = `${currentTime.getHours()}:${currentMinutes}`;
+      lastMessageBubble.status = 'notSentStatus';
+      lastMessageBubble.className = 'mine';
+      this.$messageList.append(lastMessageBubble);
+      this.$messageList.scrollTop = this.$messageList.scrollHeight;
+      // let storageItem = {};
+      // localStorage.setItem();
+      this.$input.value = '';
+    }
   }
 
   _onKeyPress(event) {
-    if (event.keyCode == 13) {
+    if (event.keyCode === 13) {
       this.$form.dispatchEvent(new Event('submit'));
     }
+  }
+
+  _onSendClickedPress(event) {
+    event.preventDefault();
+    this.$form.dispatchEvent(new Event('submit'));
   }
 }
 
 customElements.define('message-form', MessageForm);
+
+export default MessageForm;

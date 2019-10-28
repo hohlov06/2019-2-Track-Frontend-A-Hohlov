@@ -9,18 +9,35 @@ template.innerHTML = `
         }
         
       .chatlist-header {
-        display:none;
+        display:flex;
         flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        width: calc(100% - 2px);
+        align-items: center;
       }
       
       .message-header {
-        display:flex;
+        display:none;
         flex-direction: row;
+        justify-content:space-between;
+        flex-wrap: nowrap;
+        width: calc(100% - 2px);
+        align-items: center;
       }
       
-      .chatlist-central
+      .chatlist-info
       {
-        align-self: flex-start;
+        flex: 1 1 90%;
+        font-size: 5vh;
+        line-height: 100%;
+        color: white;
+      }
+      
+      .message-header-info
+      {
+        flex: 1 1 90%;
+        color: white;
       }
         
       .back-button:focus, .search-button:focus, .chat-options-button:focus, .settings-button:focus {
@@ -29,10 +46,12 @@ template.innerHTML = `
          
       .back-button:hover, .search-button:hover, .chat-options-button:hover, .settings-button:hover {
         background-color: powderblue;
+        animation: header-button-hover-animation;
       }
 
       .back-button:active, .search-button:active, .chat-options-button:active, .settings-button:active { 
         background-color: blueviolet;
+        animation: header-button-active-animation;
       }
       
         
@@ -44,18 +63,25 @@ template.innerHTML = `
             border:none;
         }
         
-        .settings-button {
-            align-self: flex-start;
+        .back-button, .settings-button {
         }
         
-         .back-button, .search-button, chat-options-button {
-            align-self: flex-end;
+        .search-button, chat-options-button {
         }
         
         .header-pic {
             fill: white;
         }
         
+        @keyframes header-button-hover-animation {
+        
+        }
+        
+        
+        @keyframes header-button-active-animation {
+        
+        }
+      
     </style>
            
     <div class="chatlist-header">
@@ -88,24 +114,9 @@ template.innerHTML = `
             z M239.4,315.601c-42.1,0-76.3-34.2-76.3-76.3s34.2-76.3,76.3-76.3s76.3,34.2,76.3,76.3S281.5,315.601,239.4,315.601z"/>
         </g>
     </svg>
-    
-    <div class="chatlist-central">qweqwe</div>
-    
-    </div>
-    
-    <div class="message-header">
-    
-        <button class="back-button">
-        <svg class="back-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "5vh" height = "5vh" viewBox="200 -20 100 500" xml:space="preserve">
-        <g>
-        <path class="header-pic" d="M473.475,230.025h-427.4l116-116c5.3-5.3,5.3-13.8,0-19.1c-5.3-5.3-13.8-5.3-19.1,0l-139,139c-5.3,5.3-5.3,13.8,0,19.1
-            l139,139c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4c5.3-5.3,5.3-13.8,0-19.1l-116-116h427.5c7.5,0,13.5-6,13.5-13.5
-            S480.975,230.025,473.475,230.025z"/>
-        </g>
-        </svg>
     </button>
     
-    <div class="message-header-central">qweqwe</div>
+    <div class="chatlist-info">Messenger</div>
     
     <button class="search-button">
         <svg class="search-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "5vh" height = "5vh" viewBox="200 -20 100 500" xml:space="preserve">
@@ -117,6 +128,23 @@ template.innerHTML = `
         </g>
         </svg>
     </button>
+    
+    </div>
+    
+    <div class="message-header">
+    
+    <button class="back-button">
+        <svg class="back-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "5vh" height = "5vh" viewBox="200 -20 100 500" xml:space="preserve">
+        <g>
+        <path class="header-pic" d="M473.475,230.025h-427.4l116-116c5.3-5.3,5.3-13.8,0-19.1c-5.3-5.3-13.8-5.3-19.1,0l-139,139c-5.3,5.3-5.3,13.8,0,19.1
+            l139,139c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4c5.3-5.3,5.3-13.8,0-19.1l-116-116h427.5c7.5,0,13.5-6,13.5-13.5
+            S480.975,230.025,473.475,230.025z"/>
+        </g>
+        </svg>
+    </button>
+    
+    <div class="message-header-info">qweqwe</div>
+   
     
     <button class="chat-options-button">
         <svg class="chat-options-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "5vh" height = "5vh" viewBox="150 -70 100 500" xml:space="preserve">
@@ -140,12 +168,12 @@ class Header extends HTMLElement {
     this._shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.$settingsButton = this.shadowRoot.querySelector('.settings-button');
-    this.$messageHeaderCentral = this.shadowRoot.querySelector('.message-header-central');
+    this.$messageHeaderInfo = this.shadowRoot.querySelector('.message-header-info');
 
     this.$backButton = this.shadowRoot.querySelector('.back-button');
     this.$searchButton = this.shadowRoot.querySelector('.search-button');
     this.$chatOptionsButton = this.shadowRoot.querySelector('.chat-options-button');
-    this.$chatlistCentral = this.shadowRoot.querySelector('.chatlist-central');
+    this.$chatlistInfo = this.shadowRoot.querySelector('.chatlist-info');
 
     this.$messageHeader = this.shadowRoot.querySelector('.message-header');
     this.$chatlistHeader = this.shadowRoot.querySelector('.chatlist-header');
@@ -156,25 +184,34 @@ class Header extends HTMLElement {
     this.$chatOptionsButton.addEventListener('click', this._onChatOptionClicked.bind(this));
   }
 
-  _onBackClicked() {
-    this.$messageHeader.style.display = 'none';
-    this.$chatlistHeader.style.display = 'flex';
-  }
-
-  _onSettingsClicked() {
+  toMessageHeader() {
     this.$messageHeader.style.display = 'flex';
     this.$chatlistHeader.style.display = 'none';
   }
 
-  _onSearchClicked() {
+  toChatHeader() {
+    this.$messageHeader.style.display = 'none';
+    this.$chatlistHeader.style.display = 'flex';
+  }
+
+  _onBackClicked(event) {
+    this.toChatHeader();
+    this.dispatchEvent(new Event('backClicked'));
+  }
+
+  _onSettingsClicked(event) {
+    //this.toMessageHeader();
+  }
+
+  _onSearchClicked(event) {
 
   }
 
-  _onChatOptionClicked() {
+  _onChatOptionClicked(event) {
 
   }
-
-
 }
 
 customElements.define('chat-header', Header);
+
+export default Header;

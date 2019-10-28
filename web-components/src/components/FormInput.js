@@ -5,6 +5,9 @@ template.innerHTML = `
             border: 0;
             outline: none;
             width: calc(100% - 2px);
+            padding-left: 1%;
+            overflow-wrap: break-word;
+            overflow-y: auto;
         }
 
         :host {
@@ -13,7 +16,6 @@ template.innerHTML = `
         }
         
         .attach-button,.send-button {
-            align-self:flex-end;
             margin-left: 1vh;
             margin-right: 1vh;
             border-radius: 100%;
@@ -27,14 +29,29 @@ template.innerHTML = `
          
       .attach-button:hover,.send-button:hover {
         background-color: powderblue;
+        animation: message-input-button-hover-animation;
       }
       .attach-button:active,.send-button:active { 
         background-color: blueviolet;
+        animation: message-input-button-active-animation;
       }
 
       .attach-button-img,.send-button-img {
       }
 
+      .attach-button > .attach-button-img  path, .send-button > .send-button-img  path{
+         fill: #bbb;
+        }
+        
+      @keyframes message-input-button-active-animation {
+        
+      }
+        
+        
+      @keyframes message-input-button-hover-animation {
+        
+      }
+        
     </style>
     <input type="text">
     <button class="attach-button">
@@ -74,6 +91,8 @@ class FormInput extends HTMLElement {
     this.$input = this.shadowRoot.querySelector('input');
     this.$attachButton = this.shadowRoot.querySelector('.attach-button');
     this.$sendButton = this.shadowRoot.querySelector('.send-button');
+
+    this.$sendButton.addEventListener('click', this._onSendClicked.bind(this));
   }
 
   static get observedAttributes() {
@@ -88,9 +107,20 @@ class FormInput extends HTMLElement {
     return this.$input.value;
   }
 
-  set value(value){
+  set value(value) {
     this.$input.value = value;
   }
+
+  _onSendClicked(event) {
+    event.preventDefault();
+    this.dispatchEvent(new Event('sendClicked'));
+  }
+
+  // get sendButton() {
+  //   return this.$sendButton;
+  // }
 }
 
 customElements.define('form-input', FormInput);
+
+export default FormInput;
