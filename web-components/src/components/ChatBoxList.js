@@ -177,7 +177,10 @@ class ChatBoxList extends HTMLElement {
   loadFromStorage() {
     this.$chatList.innerHTML = '';
     try {
-      const chatList = JSON.parse(localStorage.getItem('chats'));
+      const chatListString = localStorage.getItem('chats');
+      if (chatListString === null)
+        return;
+      const chatList = JSON.parse(chatListString);
       const boxArray = [];
       Object.keys(chatList).forEach((id) => {
         const chatBox = this._createChatBox();
