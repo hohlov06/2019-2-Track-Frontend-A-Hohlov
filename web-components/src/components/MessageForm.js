@@ -1,6 +1,7 @@
 import ChatBubble from './ChatBubble';
 import MessageSequence from './MessageSequence';
 import FormInput from './FormInput';
+import * as Utils from './StorageUtils'
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -65,25 +66,78 @@ class MessageForm extends HTMLElement {
   }
 
   connectedCallback() {
+    //this.loadFromStorage();
+  }
+
+  set chatId(value) {
+    this._chatId = value;
+  }
+
+  get chatId() {
+    return this._chatId;
+  }
+
+  loadFromStorage() {
+    this.$messageList.innerHTML = '';
+    try {
+      const storageKey = Utils.chatStorageKey(this.chatId);
+      const messageListString = localStorage.getItem(storageKey);
+      if (messageListString === null)
+        return;
+      const messageList = Array.from(JSON.parse(messageListString));
+      messageList.forEach((message) => {
+        const messageBubble = document.createElement('chat-bubble');
+        messageBubble.fromObj(message);
+        this.$messageList.appendChild(messageBubble);
+      });
+      this.$messageList.scrollTop = this.$messageList.scrollHeight;
+    } catch (e) {
+      localStorage.clear();
+      throw e;
+    }
+  }
+  //
+  // saveToStorage(message) {
+  //   try {
+  //     const storageKey = Utils.chatStorageKey(this.chatId);
+  //     const messageList = Array.from(JSON.parse(localStorage.getItem(storageKey)));
+  //     messageList.push(message.toObj());
+  //     localStorage.setItem(storageKey, JSON.stringify(messageList));
+  //   }
+  //   catch(e) {
+  //     localStorage.clear();
+  //     throw e;
+  //   }
+  // }
+
+  saveAllToStorage() {
+    try {
+      const chatBubbles = this.$messageList.querySelectorAll('chat-bubble');
+      const messages = [];
+      chatBubbles.forEach((bubble) => {
+        messages.push(bubble.toObj());
+      });
+      const storageKey = Utils.chatStorageKey(this.chatId);
+      localStorage.setItem(storageKey, JSON.stringify(messages));
+    } catch (e) {
+      localStorage.clear();
+      throw e;
+    }
   }
 
   _onSubmit(event) {
     event.preventDefault();
     if (this.$input.value.toString().trim() !== '') {
-      const currentTime = new Date();
       const lastMessageBubble = document.createElement('chat-bubble');
       lastMessageBubble.className = 'mine';
       lastMessageBubble.content = this.$input.value;
-      let currentMinutes = currentTime.getMinutes();
-      if (currentMinutes < 10)
-        currentMinutes = `0${currentMinutes}`;
-      lastMessageBubble.time = `${currentTime.getHours()}:${currentMinutes}`;
+      lastMessageBubble.time = new Date();
+
       lastMessageBubble.status = 'notSentStatus';
-      lastMessageBubble.className = 'mine';
+      lastMessageBubble.profileId = Utils.myProfileId;
       this.$messageList.append(lastMessageBubble);
       this.$messageList.scrollTop = this.$messageList.scrollHeight;
-      // let storageItem = {};
-      // localStorage.setItem();
+      this.saveAllToStorage();
       this.$input.value = '';
     }
   }
@@ -98,6 +152,12 @@ class MessageForm extends HTMLElement {
     event.preventDefault();
     this.$form.dispatchEvent(new Event('submit'));
   }
+
+  // _createMessage() {
+  //   const messageBubble = document.createElement('chat-bubble');
+  //   messageBubble.addEventListener('click', this._onMessageBubbleClick.bind(this));
+  //   return messageBubble;
+  // }
 }
 
 customElements.define('message-form', MessageForm);

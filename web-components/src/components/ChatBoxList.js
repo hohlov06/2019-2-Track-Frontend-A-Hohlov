@@ -1,6 +1,7 @@
 import ChatBox from './ChatBox';
 import Header from './Header';
 import MessageForm from './MessageForm';
+import * as Utils from './StorageUtils';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -15,20 +16,36 @@ template.innerHTML = `
         }
         
         .chat-list-window {
-            display:flex;
-            flex-direction: column;
+            display: inline; 
             height:100%;
-            justify-content: space-between;
+            overflow: auto;
         }
         
         .chat-list {
             display: flex;
             flex-direction: column;
-        }        
+            height:100%;
+            overflow: auto;
+        }
+        
+        .create-chat-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        
+        .create-chat-input {
+            diplay:none;
+            align-self: flex-start;
+        }
         
         .create-chat-button {
-            width: 100px;
-            height: 100px;
+            position: absolute;
+            
+            bottom: 10px;
+            right: 10px;
+            width: 80px;
+            height: 80px;
             align-self: flex-end;
             margin-bottom: 1vh;
             margin-left: 1vh;
@@ -70,8 +87,9 @@ template.innerHTML = `
     
     <div class="main-window">
 
+        
         <chat-header></chat-header>
-    <div class="chat-list-window">
+        <div class = "chat-list-window">
         <div class="chat-list"></div>
     
     <button class="create-chat-button"> 
@@ -101,47 +119,145 @@ class ChatBoxList extends HTMLElement {
     this.$mainWindow = this._shadowRoot.querySelector('.main-window');
     this.$chatListWindow = this._shadowRoot.querySelector('.chat-list-window');
     this.$chatList = this._shadowRoot.querySelector('.chat-list');
-    this.$createChat = this._shadowRoot.querySelector('.create-chat-button');
+    this.$createChatButton = this._shadowRoot.querySelector('.create-chat-button');
 
-    this.$createChat.addEventListener('click', this._onCreateChatClicked.bind(this));
+    this.$createChatButton.addEventListener('click', this._onCreateChatButtonClicked.bind(this));
     this.$header.addEventListener('backClicked', this._onHeaderBackClicked.bind(this));
 
     //this.$messageFormBuffer = [];
   }
 
   connectedCallback() {
+    this.loadFromStorage();
     this.defaultChats();
   }
 
   defaultChats() {
-    const chat1 = document.createElement('chat-box');
-    this.$chatList.appendChild(chat1);
-    //chat1.avatar = '/images/pic_1.png';
-    chat1.author = 'Some Person';
-    //chat1.text = 'allo';
-    //chat1.time = '01:23';
-    //chat1.status = 'haveReadStatus';
-    //chat1.chatId = 1;
+    const chatBoxes = this.$chatList.querySelectorAll('chat-box');
+    const idSet = new Set();
+    chatBoxes.forEach((box) => {
+      idSet.add(box.chatId);
+    });
+    if (!idSet.has('3')) {
+      const chat3 = this._createChatBox();
+      this.$chatList.prepend(chat3);
+      chat3.avatar = 'images/pic_3.png';
+      chat3.name = 'Another Person';
+      chat3.text = 'Long text Long text Long text Long text Long text Long text Long text Long textLong text';
+      chat3.time = new Date(2017, 4, 5, 6, 7, 8);
+      chat3.status = 'notGivenStatus';
+      chat3.chatId = 3;
+    }
 
-    chat1.addEventListener('click', this._onChatboxClick.bind(this));
+    if (!idSet.has('2')) {
+      const chat2 = this._createChatBox();
+      this.$chatList.prepend(chat2);
+      chat2.avatar = 'images/pic_2.jpg';
+      chat2.name = '一些中國人';
+      chat2.text = '這是日本像形文字的例子';
+      chat2.time = new Date(2019, 2, 3, 1, 2, 9);
+      chat2.status = 'notReadStatus';
+      chat2.chatId = 2;
+    }
+
+    if (!idSet.has('1')) {
+      const chat1 = this._createChatBox();
+      this.$chatList.prepend(chat1);
+      chat1.avatar = 'images/pic_1.jpg';
+      chat1.chatId = 1;
+      chat1.name = 'Some Person';
+      chat1.text = 'text is not sorted by time';
+      chat1.time = new Date(2013, 1, 1, 12, 45, 56);
+      chat1.status = 'haveReadStatus';
+    }
+
+    this.saveAllToStorage();
   }
+
+  loadFromStorage() {
+    this.$chatList.innerHTML = '';
+    try {
+      const chatList = JSON.parse(localStorage.getItem('chats'));
+      const boxArray = [];
+      Object.keys(chatList).forEach((id) => {
+        const chatBox = this._createChatBox();
+        boxArray.push(chatBox);
+        chatBox.chatId = id;
+        chatBox.fromObj(chatList[id]);
+      });
+      boxArray.forEach((box) => {
+        this.$chatList.appendChild(box); // TODO sorted by time
+      });
+    } catch (e) {
+      localStorage.clear();
+      throw e;
+    }
+  }
+
+  saveAllToStorage() {
+    try {
+      const chatBoxes = this.$chatList.querySelectorAll('chat-box');
+      const chatList = {};
+      chatBoxes.forEach((box) => {
+        chatList[box.chatId] = box.toObj();
+      });
+      localStorage.setItem('chats', JSON.stringify(chatList));
+    } catch (e) {
+      localStorage.clear();
+      throw e;
+    }
+  }
+
+  saveToStorage(chat) {
+    try {
+      const chatList = JSON.parse(localStorage.getItem('chats'));
+      chatList[chat.chatId] = chat.toObj();
+      localStorage.setItem('chats', JSON.stringify(chatList));
+    } catch (e) {
+      localStorage.clear();
+      throw e;
+    }
+  }
+
+  _createChatBox() {
+    const chat = document.createElement('chat-box');
+    chat.addEventListener('click', this._onChatboxClick.bind(this));
+    return chat;
+  }
+
 
   _onChatboxClick(event) {
-  }
-
-  _onCreateChatClicked(event) {
+    const chatBox = event.target.closest('chat-box');
     const newMessageForm = document.createElement('message-form');
     this.$chatListWindow.style.display = 'none';
     this.$mainWindow.appendChild(newMessageForm);
     this.$header.toMessageHeader();
     //this.$messageFormBuffer.push(newMessageForm);
     this.activeMessageForm = newMessageForm;
+    this.$header.avatar = chatBox.avatar;
+    this.$header.name = chatBox.name;
+    this.$header.status = 'был 123 минут назад';
+    newMessageForm.chatId = chatBox.chatId;
+    newMessageForm.loadFromStorage();
+  }
+
+  _onCreateChatButtonClicked(event) {
+    const newChat = document.createElement('chat-box');
+    newChat.addEventListener('click', this._onChatboxClick.bind(this));
+    newChat.chatId = Utils.generateChatId();
+    newChat.avatar = 'images/default_image.png';
+    newChat.name = 'First name Second Name';
+    newChat.text = 'Enter your first message';
+    newChat.time = new Date();
+    newChat.status = '';
+    this.$chatList.prepend(newChat);
+    this.saveToStorage(newChat);
   }
 
   _onHeaderBackClicked(event) {
     this.$mainWindow.removeChild(this.activeMessageForm);
     //this._shadowRoot.querySelector('message-form').style.display = 'none';
-    this.$chatListWindow.style.display = 'flex';
+    this.$chatListWindow.style.display = 'inline';
   }
 }
 

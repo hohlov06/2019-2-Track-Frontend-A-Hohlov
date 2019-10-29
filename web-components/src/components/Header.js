@@ -29,7 +29,7 @@ template.innerHTML = `
       .chatlist-info
       {
         flex: 1 1 90%;
-        font-size: 5vh;
+        font-size: 200%;
         line-height: 100%;
         color: white;
       }
@@ -38,7 +38,25 @@ template.innerHTML = `
       {
         flex: 1 1 90%;
         color: white;
+        flex-direction: column;
       }
+      
+      .message-header-avatar {
+        width: 30px;
+      }
+      
+      .message-header-info-content {
+      
+      }
+      
+      .message-header-chat-name {
+      
+      }
+      
+      .message-header-info-status {
+      
+      }
+      
         
       .back-button:focus, .search-button:focus, .chat-options-button:focus, .settings-button:focus {
            outline: none;
@@ -56,8 +74,8 @@ template.innerHTML = `
       
         
         .back-button, .search-button, .chat-options-button, .settings-button {
-            margin-left: 1vh;
-            margin-right: 1vh;
+            margin-left: 1px;
+            margin-right: 1px;
             border-radius: 100%;
             background-color: inherit;
             border:none;
@@ -87,7 +105,7 @@ template.innerHTML = `
     <div class="chatlist-header">
     
      <button class="settings-button">
-        <svg class="settings-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "5vh" height = "5vh" viewBox="200 -20 100 500" xml:space="preserve">
+        <svg class="settings-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "30px" height = "30px" viewBox="200 -20 100 500" xml:space="preserve">
         <g>
         <path class="header-pic" d="M454.2,189.101l-33.6-5.7c-3.5-11.3-8-22.2-13.5-32.6l19.8-27.7c8.4-11.8,7.1-27.9-3.2-38.1l-29.8-29.8
             c-5.6-5.6-13-8.7-20.9-8.7c-6.2,0-12.1,1.9-17.1,5.5l-27.8,19.8c-10.8-5.7-22.1-10.4-33.8-13.9l-5.6-33.2
@@ -119,7 +137,7 @@ template.innerHTML = `
     <div class="chatlist-info">Messenger</div>
     
     <button class="search-button">
-        <svg class="search-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "5vh" height = "5vh" viewBox="200 -20 100 500" xml:space="preserve">
+        <svg class="search-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "30px" height = "30px" viewBox="200 -20 100 500" xml:space="preserve">
         <g>
         <path class="header-pic" d="M0,203.25c0,112.1,91.2,203.2,203.2,203.2c51.6,0,98.8-19.4,134.7-51.2l129.5,129.5c2.4,2.4,5.5,3.6,8.7,3.6
             s6.3-1.2,8.7-3.6c4.8-4.8,4.8-12.5,0-17.3l-129.6-129.5c31.8-35.9,51.2-83,51.2-134.7c0-112.1-91.2-203.2-203.2-203.2
@@ -134,7 +152,7 @@ template.innerHTML = `
     <div class="message-header">
     
     <button class="back-button">
-        <svg class="back-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "5vh" height = "5vh" viewBox="200 -20 100 500" xml:space="preserve">
+        <svg class="back-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "30px" height = "30px" viewBox="200 -20 100 500" xml:space="preserve">
         <g>
         <path class="header-pic" d="M473.475,230.025h-427.4l116-116c5.3-5.3,5.3-13.8,0-19.1c-5.3-5.3-13.8-5.3-19.1,0l-139,139c-5.3,5.3-5.3,13.8,0,19.1
             l139,139c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4c5.3-5.3,5.3-13.8,0-19.1l-116-116h427.5c7.5,0,13.5-6,13.5-13.5
@@ -143,11 +161,18 @@ template.innerHTML = `
         </svg>
     </button>
     
-    <div class="message-header-info">qweqwe</div>
+    <div class="message-header-info">
+        <img class="message-header-avatar">
+        </img>
+        <div class="message-header-info-content">
+            <div class="message-header-chat-name"></div>
+            <div class="message-header-info-status"></div>
+        </div>
+    </div>
    
     
     <button class="chat-options-button">
-        <svg class="chat-options-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "5vh" height = "5vh" viewBox="150 -70 100 500" xml:space="preserve">
+        <svg class="chat-options-button-img" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"  width = "30px" height = "30px" viewBox="150 -70 100 500" xml:space="preserve">
         <g>
         <path class="header-pic" d="M204,102c28.05,0,51-22.95,51-51S232.05,0,204,0s-51,22.95-51,51S175.95,102,204,102z M204,153c-28.05,0-51,22.95-51,51
             s22.95,51,51,51s51-22.95,51-51S232.05,153,204,153z M204,306c-28.05,0-51,22.95-51,51s22.95,51,51,51s51-22.95,51-51
@@ -169,6 +194,10 @@ class Header extends HTMLElement {
 
     this.$settingsButton = this.shadowRoot.querySelector('.settings-button');
     this.$messageHeaderInfo = this.shadowRoot.querySelector('.message-header-info');
+    this.$messageHeaderAvatar = this.shadowRoot.querySelector('.message-header-avatar');
+    this.$messageHeaderContent = this.shadowRoot.querySelector('.message-header-info-content');
+    this.$messageHeaderName = this.shadowRoot.querySelector('.message-header-chat-name');
+    this.$messageHeaderStatus = this.shadowRoot.querySelector('.message-header-info-status');
 
     this.$backButton = this.shadowRoot.querySelector('.back-button');
     this.$searchButton = this.shadowRoot.querySelector('.search-button');
@@ -182,6 +211,30 @@ class Header extends HTMLElement {
     this.$backButton.addEventListener('click', this._onBackClicked.bind(this));
     this.$searchButton.addEventListener('click', this._onSearchClicked.bind(this));
     this.$chatOptionsButton.addEventListener('click', this._onChatOptionClicked.bind(this));
+  }
+
+  set avatar(value) {
+    this.$messageHeaderAvatar.src = value;
+  }
+
+  get avatar() {
+    return this.$messageHeaderAvatar.src;
+  }
+
+  set name(value) {
+    this.$messageHeaderName.innerHTML = value;
+  }
+
+  get name() {
+    return this.$messageHeaderName.innerHTML;
+  }
+
+  set status(value) {
+    this.$messageHeaderStatus.innerHTML = value;
+  }
+
+  get status() {
+    return this.$messageHeaderStatus.innerHTML;
   }
 
   toMessageHeader() {

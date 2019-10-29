@@ -1,4 +1,5 @@
 import { notGivenStatus, notReadStatus, notSentStatus, haveReadStatus } from './SvgConstants'
+import * as Utils from './StorageUtils'
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -130,12 +131,44 @@ class ChatBubble extends HTMLElement {
     this.status = notSentStatus;
   }
 
+  fromObj(obj) {
+    this.profileId = obj.profileId;
+    this.author = obj.author;// TODO from storage
+    this.content = obj.content;
+    this.time = obj.time;
+    this.status = obj.status;
+    this.additionalInfo = obj.additionalInfo;
+  }
+
+  toObj() {
+    const obj = {};
+    obj.profileId = this.profileId;
+    obj.author = this.author; // TODO from storage
+    obj.content = this.content;
+    obj.time = this.time;
+    obj.status = this.status;
+    obj.additionalInfo = this.additionalInfo;
+    return obj;
+  }
+
+  set profileId(value) {
+    this.authorId = value;
+    if (value === Utils.myProfileId)
+      this.className = 'mine';
+    else
+      this.className = 'their';
+  }
+
+  get profileId() {
+    return this.authorId;
+  }
+
   set author(value) {
     this.$author.innerHTML = value;
   }
 
   get author() {
-    return this.$author.value;
+    return this.$author.innerHTML;
   }
 
   set content(value) {
@@ -143,18 +176,20 @@ class ChatBubble extends HTMLElement {
   }
 
   get content() {
-    return this.$content.value;
+    return this.$content.innerHTML;
   }
 
   set time(value) {
-    this.$time.innerHTML = value;
+    this.exactTime = new Date(value);
+    this.$time.innerHTML = Utils.hoursMinutes(this.exactTime);
   }
 
   get time() {
-    return this.$time.value;
+    return this.exactTime;
   }
 
   set status(value) {
+    this.statusCode = value;
     if (typeof (value) === 'string') {
       if (value === 'notSentStatus') this.$status.innerHTML = notSentStatus;
       else if (value === 'notGivenStatus') this.$status.innerHTML = notGivenStatus;
@@ -164,7 +199,7 @@ class ChatBubble extends HTMLElement {
   }
 
   get status() {
-    return this.$status.className;
+    return this.statusCode;
   }
 
   set additionalInfo(value) {
@@ -172,7 +207,7 @@ class ChatBubble extends HTMLElement {
   }
 
   get additionalInfo() {
-    return this.$additionalInfo.className;
+    return this.$additionalInfo.innerHTML;
   }
 }
 
