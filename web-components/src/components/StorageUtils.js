@@ -11,9 +11,12 @@ function idFromName(name, prefix) {
 }
 
 function nameFromId(id, prefix) {
-  if (!Number.isInteger(id))
+  if (id === null)
     return false;
-  return prefix + id;
+  const idNumber = Number(id);
+  if (!Number.isInteger(idNumber))
+    return false;
+  return prefix + idNumber;
 }
 
 export function chatStorageKey(id) {

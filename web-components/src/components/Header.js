@@ -6,6 +6,7 @@ template.innerHTML = `
             flex-direction: row;
             border: 1px solid rgba(25, 25, 25, 0.32);
             background-color: dodgerblue;
+            flex: 1 1 5%;
         }
         
       .chatlist-header {
@@ -36,17 +37,24 @@ template.innerHTML = `
       
       .message-header-info
       {
+        display: flex;
         flex: 1 1 90%;
         color: white;
-        flex-direction: column;
+        flex-direction: row;
+        margin-left: 10px;
+        margin-right: 10px;
       }
       
       .message-header-avatar {
+        border-radius: 100%;
         width: 30px;
+        height: 30px;
+        align-self: center;
       }
       
       .message-header-info-content {
-      
+        padding-left: 5px;
+        align-self: center;
       }
       
       .message-header-chat-name {
@@ -54,7 +62,7 @@ template.innerHTML = `
       }
       
       .message-header-info-status {
-      
+        color: #bbb;
       }
       
         

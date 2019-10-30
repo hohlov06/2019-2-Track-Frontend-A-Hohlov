@@ -1,6 +1,7 @@
 import ChatBox from './ChatBox';
 import Header from './Header';
 import MessageForm from './MessageForm';
+import ChatBubble from './ChatBubble';
 import * as Utils from './StorageUtils';
 
 const template = document.createElement('template');
@@ -138,6 +139,7 @@ class ChatBoxList extends HTMLElement {
     chatBoxes.forEach((box) => {
       idSet.add(box.chatId);
     });
+    let isChatListChanged = false;
     if (!idSet.has('3')) {
       const chat3 = this._createChatBox();
       this.$chatList.prepend(chat3);
@@ -147,6 +149,17 @@ class ChatBoxList extends HTMLElement {
       chat3.time = new Date(2017, 4, 5, 6, 7, 8);
       chat3.status = 'notGivenStatus';
       chat3.chatId = 3;
+      const storageKey = Utils.chatStorageKey('3');
+      const message = document.createElement('chat-bubble');
+      const messages = [];
+      message.className = 'their';
+      message.content = 'Long text Long text Long text Long text Long text Long text Long text Long textLong text';
+      message.time = new Date(2017, 4, 5, 6, 7, 8);
+      message.status = 'notGivenStatus';
+      message.profileId = '2';
+      messages.push(message.toObj());
+      localStorage.setItem(storageKey, JSON.stringify(messages));
+      isChatListChanged = true;
     }
 
     if (!idSet.has('2')) {
@@ -154,10 +167,21 @@ class ChatBoxList extends HTMLElement {
       this.$chatList.prepend(chat2);
       chat2.avatar = 'images/pic_2.jpg';
       chat2.name = '一些中國人';
-      chat2.text = '這是日本像形文字的例子';
+      chat2.text = '這是日本像形文字的例子😀😀😀😀😀';
       chat2.time = new Date(2019, 2, 3, 1, 2, 9);
       chat2.status = 'notReadStatus';
       chat2.chatId = 2;
+      const storageKey = Utils.chatStorageKey('2');
+      const message = document.createElement('chat-bubble');
+      const messages = [];
+      message.className = 'their';
+      message.content = '這是日本像形文字的例子😀😀😀😀😀';
+      message.time = new Date(2019, 2, 3, 1, 2, 9);
+      message.status = 'notReadStatus';
+      message.profileId = '2';
+      messages.push(message.toObj());
+      localStorage.setItem(storageKey, JSON.stringify(messages));
+      isChatListChanged = true;
     }
 
     if (!idSet.has('1')) {
@@ -166,12 +190,23 @@ class ChatBoxList extends HTMLElement {
       chat1.avatar = 'images/pic_1.jpg';
       chat1.chatId = 1;
       chat1.name = 'Some Person';
-      chat1.text = 'text is not sorted by time';
+      chat1.text = 'chats are not sorted by time';
       chat1.time = new Date(2013, 1, 1, 12, 45, 56);
       chat1.status = 'haveReadStatus';
+      const storageKey = Utils.chatStorageKey('1');
+      const message = document.createElement('chat-bubble');
+      const messages = [];
+      message.className = 'their';
+      message.content = 'chats are not sorted by time';
+      message.time = new Date(2013, 1, 1, 12, 45, 56);
+      message.status = 'haveReadStatus';
+      message.profileId = '2';
+      messages.push(message.toObj());
+      localStorage.setItem(storageKey, JSON.stringify(messages));
+      isChatListChanged = true;
     }
-
-    this.saveAllToStorage();
+    if (isChatListChanged === true)
+      this.saveAllToStorage();
   }
 
   loadFromStorage() {
@@ -237,6 +272,7 @@ class ChatBoxList extends HTMLElement {
     this.$header.toMessageHeader();
     //this.$messageFormBuffer.push(newMessageForm);
     this.activeMessageForm = newMessageForm;
+    this.activeChatBox = chatBox;
     this.$header.avatar = chatBox.avatar;
     this.$header.name = chatBox.name;
     this.$header.status = 'был 123 минут назад';
@@ -258,6 +294,13 @@ class ChatBoxList extends HTMLElement {
   }
 
   _onHeaderBackClicked(event) {
+    const lastMessage = this.activeMessageForm.lastMessage();
+    if (lastMessage !== null) {
+      this.activeChatBox.text = lastMessage.content;
+      this.activeChatBox.time = lastMessage.time;
+      this.activeChatBox.status = lastMessage.status;
+      this.saveToStorage(this.activeChatBox);
+    }
     this.$mainWindow.removeChild(this.activeMessageForm);
     //this._shadowRoot.querySelector('message-form').style.display = 'none';
     this.$chatListWindow.style.display = 'inline';

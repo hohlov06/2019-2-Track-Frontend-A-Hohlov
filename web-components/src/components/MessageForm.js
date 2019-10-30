@@ -125,6 +125,13 @@ class MessageForm extends HTMLElement {
     }
   }
 
+  lastMessage() {
+    const bubble = this.$messageList.querySelector(':last-child');
+    if (bubble === null)
+      return null;
+    return bubble.toObj();
+  }
+
   _onSubmit(event) {
     event.preventDefault();
     if (this.$input.value.toString().trim() !== '') {

@@ -128,7 +128,7 @@ class ChatBubble extends HTMLElement {
   }
 
   connectedCallback() {
-    this.status = notSentStatus;
+    //this.status = 'notSentStatus';
   }
 
   fromObj(obj) {
